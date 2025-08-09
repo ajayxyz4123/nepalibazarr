@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NepaliBazar - Smart Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .page-container {
+            display: none;
+        }
+
+        .page-container.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .mobile-menu.open {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen text-white">
+    
+    <!-- Header -->
+    <header class="glass-card sticky top-0 z-50 border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="showPage('home')">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                        <span class="text-xl">🛒</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold gradient-text">NepaliBazar</h1>
+                        <p class="text-xs text-gray-300">Smart Marketplace</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-6">
+                    <button onclick="showPage('home')" class="text-gray-300 hover:text-white transition-colors">Home</button>
+                    <button onclick="showPage('search')" class="text-gray-300 hover:text-white transition-colors">Search</button>
+                    <button onclick="showPage('categories')" class="text-gray-300 hover:text-white transition-colors">Categories</button>
+                    <button onclick="showPage('wishlist')" class="text-gray-300 hover:text-white transition-colors flex items-center">
+                        Wishlist <span id="wishlistCount" class="bg-blue-500 text-white text-xs rounded-full px-2 py-1 ml-2">0</span>
+                    </button>
+                </nav>
+
+                <!-- Desktop Actions -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <button onclick="showPage('login')" class="text-gray-300 hover:text-white transition-colors">Login</button>
+                    <button onclick="showPage('post-ad')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">Post Ad</button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="mobile-menu md:hidden fixed inset-y-0 left-0 w-64 glass-card border-r border-white/10 z-50">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-xl font-bold gradient-text">Menu</h2>
+                    <button onclick="toggleMobileMenu()" class="text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <nav class="space-y-4">
+                    <button onclick="showPage('home'); toggleMobileMenu()" class="block w-full text-left text-gray-300 hover:text-white transition-colors py-2">Home</button>
+                    <button onclick="showPage('search'); toggleMobileMenu()" class="block w-full text-left text-gray-300 hover:text-white transition-colors py-2">Search</button>
+                    <button onclick="showPage('categories'); toggleMobileMenu()" class="block w-full text-left text-gray-300 hover:text-white transition-colors py-2">Categories</button>
+                    <button onclick="showPage('wishlist'); toggleMobileMenu()" class="block w-full text-left text-gray-300 hover:text-white transition-colors py-2">Wishlist</button>
+                    <button onclick="showPage('login'); toggleMobileMenu()" class="block w-full text-left text-gray-300 hover:text-white transition-colors py-2">Login</button>
+                    <button onclick="showPage('post-ad'); toggleMobileMenu()" class="block w-full text-left bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">Post Ad</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Home Page -->
+    <div id="homePage" class="page-container active">
+        <!-- Hero Section -->
+        <section class="py-20 px-4">
+            <div class="max-w-7xl mx-auto text-center">
+                <h2 class="text-4xl md:text-6xl font-bold mb-6 gradient-text">
+                    Welcome to NepaliBazar
+                    <br>Your Smart Marketplace
+                </h2>
+                <p class="text-xl md:text-2xl mb-8 text-gray-300 max-w-3xl mx-auto">
+                    Post your ads absolutely FREE! Join thousands of buyers and sellers in Nepal's most trusted marketplace
+                </p>
+                
+                <!-- Search Bar -->
+                <div class="max-w-4xl mx-auto glass-card rounded-2xl p-4 mb-12">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-1">
+                            <input type="text" id="mainSearchInput" placeholder="Search anything..." class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <select id="mainCategorySelect" class="px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">All Categories</option>
+                            <option value="Electronics">📱 Electronics</option>
+                            <option value="Vehicles">🚗 Vehicles</option>
+                            <option value="Real Estate">🏠 Real Estate</option>
+                            <option value="Jobs">💼 Jobs</option>
+                            <option value="Fashion">👕 Fashion</option>
+                            <option value="Home & Garden">🏡 Home & Garden</option>
+                            <option value="Books & Education">📚 Books</option>
+                            <option value="Music & Instruments">🎵 Music</option>
+                            <option value="Sports & Fitness">⚽ Sports</option>
+                            <option value="Pets & Animals">🐕 Pets</option>
+                            <option value="Food & Restaurants">🍽️ Food</option>
+                            <option value="Services">🔧 Services</option>
+                        </select>
+                        <button onclick="performSearch()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-colors">
+                            Search
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-16">
+                    <div class="glass-card rounded-xl p-6 text-center">
+                        <div class="text-3xl font-bold mb-2 gradient-text">10M+</div>
+                        <div class="text-gray-300">Active Users</div>
+                    </div>
+                    <div class="glass-card rounded-xl p-6 text-center">
+                        <div class="text-3xl font-bold mb-2 gradient-text">50M+</div>
+                        <div class="text-gray-300">Listings</div>
+                    </div>
+                    <div class="glass-card rounded-xl p-6 text-center">
+                        <div class="text-3xl font-bold mb-2 gradient-text">99.9%</div>
+                        <div class="text-gray-300">Safety Rating</div>
+                    </div>
+                    <div class="glass-card rounded-xl p-6 text-center">
+                        <div class="text-3xl font-bold mb-2 gradient-text">24/7</div>
+                        <div class="text-gray-300">Support</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-20 px-4">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16">
+                    <h3 class="text-3xl md:text-5xl font-bold mb-6 gradient-text">Smart Features</h3>
+                    <p class="text-xl text-gray-300 max-w-3xl mx-auto">Advanced capabilities that make trading smarter and safer</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="glass-card rounded-xl p-8 hover-lift">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-6">
+                            <span class="text-3xl">🧠</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-4">Smart Chat</h4>
+                        <p class="text-gray-300">Advanced conversational AI with emotional intelligence and context awareness</p>
+                    </div>
+                    
+                    <div class="glass-card rounded-xl p-8 hover-lift">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-6">
+                            <span class="text-3xl">⚛️</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-4">Price Intelligence</h4>
+                        <p class="text-gray-300">Smart price prediction that analyzes market variables for perfect pricing</p>
+                    </div>
+                    
+                    <div class="glass-card rounded-xl p-8 hover-lift">
+                        <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-6">
+                            <span class="text-3xl">🛡️</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-4">Security Shield</h4>
+                        <p class="text-gray-300">Advanced security that detects fraud patterns and prevents scams</p>
+                    </div>
+                    
+                    <div class="glass-card rounded-xl p-8 hover-lift">
+                        <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-6">
+                            <span class="text-3xl">🎯</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-4">Smart Matching</h4>
+                        <p class="text-gray-300">Advanced algorithms that find perfect matches with high compatibility</p>
+                    </div>
+                    
+                    <div class="glass-card rounded-xl p-8 hover-lift">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mx-auto mb-6">
+                            <span class="text-3xl">✨</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-4">Content Creator</h4>
+                        <p class="text-gray-300">Advanced content generation that creates compelling, optimized listings</p>
+                    </div>
+                    
+                    <div class="glass-card rounded-xl p-8 hover-lift">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-6">
+                            <span class="text-3xl">📊</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-4">Smart Analytics</h4>
+                        <p class="text-gray-300">Real-time market intelligence with predictive analytics and insights</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories Preview -->
+        <section class="py-20 px-4">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16">
+                    <h3 class="text-3xl md:text-5xl font-bold mb-6 gradient-text">Popular Categories</h3>
+                    <p class="text-xl text-gray-300">Explore millions of items across all categories</p>
+                </div>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6" id="categoriesPreview">
+                    <!-- Categories will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Listings -->
+        <section class="py-20 px-4">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16">
+                    <h3 class="text-3xl md:text-5xl font-bold mb-6 gradient-text">Recent Listings</h3>
+                    <p class="text-xl text-gray-300">Latest items from our smart marketplace</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="recentListings">
+                    <!-- Recent listings will be loaded here -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Search Page -->
+    <div id="searchPage" class="page-container">
+        <div class="py-20 px-4">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-5xl font-bold mb-6 gradient-text">Smart Search</h2>
+                    <p class="text-xl text-gray-300">Find exactly what you're looking for</p>
+                </div>
+
+                <!-- Advanced Search -->
+                <div class="glass-card rounded-2xl p-6 mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <input type="text" id="searchInput" placeholder="Search anything..." class="px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <select id="categoryFilter" class="px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">All Categories</option>
+                            <option value="Electronics">📱 Electronics</option>
+                            <option value="Vehicles">🚗 Vehicles</option>
+                            <option value="Real Estate">🏠 Real Estate</option>
+                            <option value="Jobs">💼 Jobs</option>
+                            <option value="Fashion">👕 Fashion</option>
+                            <option value="Home & Garden">🏡 Home & Garden</option>
+                            <option value="Books & Education">📚 Books</option>
+                            <option value="Music & Instruments">🎵 Music</option>
+                            <option value="Sports & Fitness">⚽ Sports</option>
+                            <option value="Pets & Animals">🐕 Pets</option>
+                            <option value="Food & Restaurants">🍽️ Food</option>
+                            <option value="Services">🔧 Services</option>
+                        </select>
+                        <select id="priceFilter" class="px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">All Prices</option>
+                            <option value="0-10000">Rs. 0 - Rs. 10,000</option>
+                            <option value="10000-50000">Rs. 10,000 - Rs. 50,000</option>
+                            <option value="50000-100000">Rs. 50,000 - Rs. 1,00,000</option>
+                            <option value="100000-500000">Rs. 1,00,000 - Rs. 5,00,000</option>
+                            <option value="500000+">Rs. 5,00,000+</option>
+                        </select>
+                        <button onclick="performAdvancedSearch()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-colors">
+                            Search
+                        </button>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-4 items-center">
+                        <select id="sortBy" class="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="newest">Newest First</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="popular">Most Popular</option>
+                            <option value="verified">Verified Only</option>
+                        </select>
+                        <div class="text-sm text-gray-300">
+                            Results: <span id="searchResultsCount" class="font-bold text-blue-400">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Results -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="searchResults">
+                    <!-- Search results will be loaded here -->
+                </div>
+
+                <!-- Load More -->
+                <div class="text-center mt-12">
+                    <button id="loadMoreSearch" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-colors" onclick="loadMoreResults()">
+                        Load More
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories Page -->
+    <div id="categoriesPage" class="page-container">
+        <div class="py-20 px-4">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-5xl font-bold mb-6 gradient-text">All Categories</h2>
+                    <p class="text-xl text-gray-300">Browse by category to find what you need</p>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6" id="allCategories">
+                    <!-- All categories will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wishlist Page -->
+    <div id="wishlistPage" class="page-container">
+        <div class="py-20 px-4">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-5xl font-bold mb-6 gradient-text">Your Wishlist</h2>
+                    <p class="text-xl text-gray-300">Items you've saved for later</p>
+                </div>
+
+                <div id="wishlistItems" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Wishlist items will be loaded here -->
+                </div>
+
+                <div id="emptyWishlist" class="text-center py-20" style="display: none;">
+                    <div class="text-6xl mb-6">💔</div>
+                    <div class="text-2xl font-bold text-white mb-4">Your wishlist is empty</div>
+                    <div class="text-gray-400 mb-8">Start adding items you love!</div>
+                    <button onclick="showPage('home')" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-colors">
+                        Browse Items
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="page-container">
+        <div class="min-h-screen flex items-center justify-center p-4">
+            <div class="glass-card rounded-2xl p-8 w-full max-w-md">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <span class="text-3xl">🔐</span>
+                    </div>
+                    <h2 class="text-3xl font-bold gradient-text mb-2">Welcome Back</h2>
+                    <p class="text-gray-300">Sign in to your account</p>
+                </div>
+                
+                <form onsubmit="handleLogin(event)" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                        <input type="email" id="loginEmail" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                        <input type="password" id="loginPassword" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-medium transition-colors">
+                        Sign In
+                    </button>
+                </form>
+                
+                <div class="mt-8 text-center">
+                    <p class="text-gray-400">Don't have an account? <button onclick="showSignupForm()" class="text-blue-400 hover:text-blue-300">Sign up</button></p>
+                </div>
+                
+                <!-- Signup Form (Hidden by default) -->
+                <div id="signupForm" class="mt-8 hidden">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold gradient-text mb-2">Create Account</h3>
+                        <p class="text-gray-300">Join NepaliBazar for FREE</p>
+                    </div>
+                    
+                    <form onsubmit="handleSignup(event)" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">First Name</label>
+                                <input type="text" id="signupFirstName" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Last Name</label>
+                                <input type="text" id="signupLastName" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                            <input type="email" id="signupEmail" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Phone Number</label>
+                            <input type="tel" id="signupPhone" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                            <input type="password" id="signupPassword" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Confirm Password</label>
+                            <input type="password" id="signupConfirmPassword" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="agreeTerms" required class="mr-3 w-4 h-4 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500">
+                            <label for="agreeTerms" class="text-sm text-gray-300">I agree to the Terms of Service and Privacy Policy</label>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-medium transition-colors">
+                            Create FREE Account
+                        </button>
+                    </form>
+                    
+                    <div class="mt-6 text-center">
+                        <p class="text-gray-400">Already have an account? <button onclick="showLoginForm()" class="text-blue-400 hover:text-blue-300">Sign in</button></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post Ad Page -->
+    <div id="postAdPage" class="page-container">
+        <div class="py-20 px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-5xl font-bold mb-6 gradient-text">Post Your Ad</h2>
+                    <p class="text-xl text-gray-300">Create a stunning listing in minutes</p>
+                </div>
+                
+                <div class="glass-card rounded-2xl p-8">
+                    <form onsubmit="handlePostAd(event)" class="space-y-8">
+                        <!-- Step Indicator -->
+                        <div class="flex items-center justify-center mb-8">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center">
+                                    <div id="step1" class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                                    <span class="ml-2 text-white font-medium">Basic Info</span>
+                                </div>
+                                <div class="w-12 h-0.5 bg-gray-600"></div>
+                                <div class="flex items-center">
+                                    <div id="step2" class="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                                    <span class="ml-2 text-gray-400 font-medium">Details</span>
+                                </div>
+                                <div class="w-12 h-0.5 bg-gray-600"></div>
+                                <div class="flex items-center">
+                                    <div id="step3" class="w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                                    <span class="ml-2 text-gray-400 font-medium">Contact</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 1: Basic Information -->
+                        <div id="formStep1" class="space-y-6">
+                            <div class="text-center mb-6">
+                                <h3 class="text-2xl font-bold gradient-text mb-2">Basic Information</h3>
+                                <p class="text-gray-300">Let's start with the basics of your listing</p>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Ad Title *</label>
+                                    <input type="text" id="adTitle" required placeholder="e.g., iPhone 15 Pro Max - Like New" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <p class="text-xs text-gray-400 mt-1">Make it descriptive and catchy</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Category *</label>
+                                    <select id="adCategory" required onchange="updateSubcategories()" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Select Category</option>
+                                        <option value="Electronics">📱 Electronics</option>
+                                        <option value="Vehicles">🚗 Vehicles</option>
+                                        <option value="Real Estate">🏠 Real Estate</option>
+                                        <option value="Jobs">💼 Jobs</option>
+                                        <option value="Fashion">👕 Fashion</option>
+                                        <option value="Home & Garden">🏡 Home & Garden</option>
+                                        <option value="Books & Education">📚 Books & Education</option>
+                                        <option value="Music & Instruments">🎵 Music & Instruments</option>
+                                        <option value="Sports & Fitness">⚽ Sports & Fitness</option>
+                                        <option value="Pets & Animals">🐕 Pets & Animals</option>
+                                        <option value="Food & Restaurants">🍽️ Food & Restaurants</option>
+                                        <option value="Services">🔧 Services</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Subcategory *</label>
+                                    <select id="adSubcategory" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Select Category First</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Condition</label>
+                                    <select id="adCondition" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Select Condition</option>
+                                        <option value="New">🆕 Brand New</option>
+                                        <option value="Like New">✨ Like New</option>
+                                        <option value="Excellent">👌 Excellent</option>
+                                        <option value="Good">👍 Good</option>
+                                        <option value="Fair">🤏 Fair</option>
+                                        <option value="Poor">👎 Poor</option>
+                                        <option value="For Parts">🔧 For Parts</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Price (Rs.) *</label>
+                                    <div class="relative">
+                                        <input type="number" id="adPrice" required placeholder="0" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <div class="absolute right-3 top-3 text-gray-400">NPR</div>
+                                    </div>
+                                    <div class="flex items-center mt-2">
+                                        <input type="checkbox" id="negotiable" class="mr-2 w-4 h-4 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500">
+                                        <label for="negotiable" class="text-sm text-gray-300">Price is negotiable</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="button" onclick="nextStep(2)" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-colors">
+                                    Next Step →
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Details -->
+                        <div id="formStep2" class="space-y-6 hidden">
+                            <div class="text-center mb-6">
+                                <h3 class="text-2xl font-bold gradient-text mb-2">Item Details</h3>
+                                <p class="text-gray-300">Provide detailed information about your item</p>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Description *</label>
+                                    <textarea id="adDescription" required rows="6" placeholder="Describe your item in detail. Include features, specifications, reason for selling, etc." class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                                    <p class="text-xs text-gray-400 mt-1">Be honest and detailed to attract serious buyers</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Brand</label>
+                                    <input type="text" id="adBrand" placeholder="e.g., Apple, Samsung, Toyota" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Model</label>
+                                    <input type="text" id="adModel" placeholder="e.g., iPhone 15 Pro Max, Camry" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Year</label>
+                                    <input type="number" id="adYear" placeholder="2024" min="1900" max="2030" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Color</label>
+                                    <input type="text" id="adColor" placeholder="e.g., Black, White, Red" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Tags (Optional)</label>
+                                    <input type="text" id="adTags" placeholder="e.g., urgent sale, warranty included, original box" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <p class="text-xs text-gray-400 mt-1">Separate tags with commas to help buyers find your item</p>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between">
+                                <button type="button" onclick="prevStep(1)" class="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-xl font-medium transition-colors">
+                                    ← Previous
+                                </button>
+                                <button type="button" onclick="nextStep(3)" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-colors">
+                                    Next Step →
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Contact & Location -->
+                        <div id="formStep3" class="space-y-6 hidden">
+                            <div class="text-center mb-6">
+                                <h3 class="text-2xl font-bold gradient-text mb-2">Contact Information</h3>
+                                <p class="text-gray-300">How should buyers contact you?</p>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Your Name *</label>
+                                    <input type="text" id="adSellerName" required placeholder="Your full name" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Email Address *</label>
+                                    <input type="email" id="adEmail" required placeholder="your.email@example.com" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Phone Number *</label>
+                                    <input type="tel" id="adPhone" required placeholder="+977-98XXXXXXXX" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">WhatsApp (Optional)</label>
+                                    <input type="tel" id="adWhatsapp" placeholder="+977-98XXXXXXXX" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Province *</label>
+                                    <select id="adProvince" required onchange="updateDistricts()" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Select Province</option>
+                                        <option value="Koshi">Koshi Province</option>
+                                        <option value="Madhesh">Madhesh Province</option>
+                                        <option value="Bagmati">Bagmati Province</option>
+                                        <option value="Gandaki">Gandaki Province</option>
+                                        <option value="Lumbini">Lumbini Province</option>
+                                        <option value="Karnali">Karnali Province</option>
+                                        <option value="Sudurpashchim">Sudurpashchim Province</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">District *</label>
+                                    <select id="adDistrict" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Select Province First</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Detailed Location *</label>
+                                    <input type="text" id="adLocation" required placeholder="e.g., Thamel, Ward No. 26, Near Kathmandu Durbar Square" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <p class="text-xs text-gray-400 mt-1">Be specific to help buyers find you easily</p>
+                                </div>
+                            </div>
+
+                            <!-- Preferences -->
+                            <div class="glass-card rounded-xl p-6">
+                                <h4 class="text-lg font-bold text-white mb-4">Contact Preferences</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="allowCalls" checked class="mr-3 w-4 h-4 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500">
+                                        <label for="allowCalls" class="text-gray-300">Allow phone calls</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="allowSMS" checked class="mr-3 w-4 h-4 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500">
+                                        <label for="allowSMS" class="text-gray-300">Allow SMS messages</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="allowEmail" checked class="mr-3 w-4 h-4 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500">
+                                        <label for="allowEmail" class="text-gray-300">Allow email contact</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between">
+                                <button type="button" onclick="prevStep(2)" class="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-xl font-medium transition-colors">
+                                    ← Previous
+                                </button>
+                                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-12 py-3 rounded-xl font-medium text-lg transition-colors">
+                                    🚀 Post My Ad
+                                </button>
+                            </div>
+                        </div>
+                        
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Widget -->
+    <div id="chatWidget" class="fixed bottom-6 right-6 w-80 max-w-[calc(100vw-2rem)] glass-card rounded-2xl shadow-2xl border border-white/20 hidden z-50">
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-4 rounded-t-2xl flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                    <span class="text-lg">🤖</span>
+                </div>
+                <div>
+                    <h4 class="font-bold">Smart Assistant</h4>
+                    <p class="text-white/80 text-sm">Always here to help</p>
+                </div>
+            </div>
+            <button onclick="toggleChat()" class="text-white/80 hover:text-white text-2xl">×</button>
+        </div>
+
+        <div id="chatMessages" class="h-64 overflow-y-auto p-4 space-y-3">
+            <div class="flex items-start space-x-2">
+                <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span class="text-white text-xs">🤖</span>
+                </div>
+                <div class="bg-white/10 rounded-lg p-3 text-sm">
+                    Hello! I'm your smart assistant. I can help with trading, market analysis, and platform guidance. How can I help you today?
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-white/10">
+            <div class="flex space-x-2">
+                <input type="text" id="chatInput" placeholder="Ask me anything..." class="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" onkeypress="handleChatKeyPress(event)">
+                <button onclick="sendMessage()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    Send
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Button -->
+    <button onclick="toggleChat()" class="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center text-2xl shadow-lg transition-colors z-40">
+        🤖
+    </button>
+
+    <!-- Footer -->
+    <footer class="glass-card text-white py-16 mt-20 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="md:col-span-2">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-4">
+                            <span class="text-2xl">🛒</span>
+                        </div>
+                        <div>
+                            <h4 class="text-2xl font-bold gradient-text">NepaliBazar</h4>
+                            <p class="text-gray-300">Smart Marketplace</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-6">Nepal's most trusted marketplace where you can buy and sell anything for FREE. Safe, secure, and easy to use platform for all your trading needs.</p>
+                </div>
+                <div>
+                    <h5 class="font-bold mb-4 text-lg">Quick Links</h5>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><button onclick="showPage('home')" class="hover:text-white transition-colors">Home</button></li>
+                        <li><button onclick="showPage('search')" class="hover:text-white transition-colors">Search</button></li>
+                        <li><button onclick="showPage('categories')" class="hover:text-white transition-colors">Categories</button></li>
+                        <li><button onclick="showPage('post-ad')" class="hover:text-white transition-colors">Post Ad</button></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-bold mb-4 text-lg">Support</h5>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><button onclick="showHelp()" class="hover:text-white transition-colors">Help Center</button></li>
+                        <li><button onclick="showContact()" class="hover:text-white transition-colors">Contact Us</button></li>
+                        <li><button onclick="showTerms()" class="hover:text-white transition-colors">Terms of Service</button></li>
+                        <li><button onclick="showPrivacy()" class="hover:text-white transition-colors">Privacy Policy</button></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/10 mt-12 pt-8 text-center">
+                <p class="text-gray-400">&copy; 2024 NepaliBazar. All rights reserved. Powered by Smart Technology.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global Variables
+        let ads = [];
+        let filteredAds = [];
+        let wishlist = [];
+        let currentPage = 1;
+        const adsPerPage = 12;
+        let currentPageView = 'home';
+
+        // Category data with subcategories
+        const categories = [
+            { 
+                name: "Electronics", 
+                emoji: "📱", 
+                count: "2.5M+",
+                subcategories: [
+                    "Mobile Phones", "Laptops & Computers", "Tablets", "Cameras & Photography",
+                    "Audio & Headphones", "Gaming Consoles", "Smart Watches", "TV & Home Theater",
+                    "Home Appliances", "Computer Accessories", "Mobile Accessories", "Other Electronics"
+                ]
+            },
+            { 
+                name: "Vehicles", 
+                emoji: "🚗", 
+                count: "1.8M+",
+                subcategories: [
+                    "Cars", "Motorcycles", "Bicycles", "Trucks & Commercial", "Auto Parts",
+                    "Boats & Marine", "RVs & Campers", "ATVs & UTVs", "Trailers", "Other Vehicles"
+                ]
+            },
+            { 
+                name: "Real Estate", 
+                emoji: "🏠", 
+                count: "950K+",
+                subcategories: [
+                    "Houses for Sale", "Houses for Rent", "Apartments for Sale", "Apartments for Rent",
+                    "Commercial Properties", "Land & Plots", "Office Spaces", "Shops & Retail",
+                    "Warehouses", "Vacation Rentals", "Room Sharing", "Other Properties"
+                ]
+            },
+            { 
+                name: "Jobs", 
+                emoji: "💼", 
+                count: "1.2M+",
+                subcategories: [
+                    "Full-time Jobs", "Part-time Jobs", "Freelance & Contract", "Internships",
+                    "Remote Work", "Government Jobs", "NGO Jobs", "Teaching Jobs",
+                    "Healthcare Jobs", "IT & Software", "Sales & Marketing", "Other Jobs"
+                ]
+            },
+            { 
+                name: "Fashion", 
+                emoji: "👕", 
+                count: "3.1M+",
+                subcategories: [
+                    "Men's Clothing", "Women's Clothing", "Kids' Clothing", "Shoes & Footwear",
+                    "Bags & Accessories", "Jewelry & Watches", "Traditional Wear", "Sportswear",
+                    "Formal Wear", "Casual Wear", "Designer Items", "Other Fashion"
+                ]
+            },
+            { 
+                name: "Home & Garden", 
+                emoji: "🏡", 
+                count: "1.5M+",
+                subcategories: [
+                    "Furniture", "Home Decor", "Kitchen & Dining", "Bedding & Bath",
+                    "Garden & Outdoor", "Tools & Hardware", "Lighting", "Storage & Organization",
+                    "Appliances", "Cleaning Supplies", "Security Systems", "Other Home Items"
+                ]
+            },
+            { 
+                name: "Books & Education", 
+                emoji: "📚", 
+                count: "800K+",
+                subcategories: [
+                    "Textbooks", "Fiction Books", "Non-fiction Books", "Children's Books",
+                    "Educational Materials", "Online Courses", "Tutoring Services", "School Supplies",
+                    "Professional Books", "Religious Books", "Magazines", "Other Educational"
+                ]
+            },
+            { 
+                name: "Music & Instruments", 
+                emoji: "🎵", 
+                count: "450K+",
+                subcategories: [
+                    "Guitars", "Keyboards & Pianos", "Drums & Percussion", "String Instruments",
+                    "Wind Instruments", "Audio Equipment", "DJ Equipment", "Music Lessons",
+                    "Sheet Music", "Recording Equipment", "Traditional Instruments", "Other Music"
+                ]
+            },
+            { 
+                name: "Sports & Fitness", 
+                emoji: "⚽", 
+                count: "650K+",
+                subcategories: [
+                    "Gym Equipment", "Outdoor Sports", "Team Sports", "Water Sports",
+                    "Winter Sports", "Fitness Accessories", "Sports Clothing", "Bicycles",
+                    "Martial Arts", "Yoga & Pilates", "Sports Nutrition", "Other Sports"
+                ]
+            },
+            { 
+                name: "Pets & Animals", 
+                emoji: "🐕", 
+                count: "320K+",
+                subcategories: [
+                    "Dogs", "Cats", "Birds", "Fish & Aquarium", "Small Pets",
+                    "Pet Supplies", "Pet Food", "Pet Services", "Pet Accessories",
+                    "Livestock", "Pet Training", "Other Pets"
+                ]
+            },
+            { 
+                name: "Food & Restaurants", 
+                emoji: "🍽️", 
+                count: "890K+",
+                subcategories: [
+                    "Restaurants", "Food Delivery", "Catering Services", "Bakery Items",
+                    "Organic Food", "Beverages", "Snacks & Sweets", "Cooking Classes",
+                    "Food Trucks", "Meal Prep", "Specialty Diets", "Other Food"
+                ]
+            },
+            { 
+                name: "Services", 
+                emoji: "🔧", 
+                count: "1.1M+",
+                subcategories: [
+                    "Home Services", "Professional Services", "Beauty & Wellness", "Event Services",
+                    "Transportation", "Cleaning Services", "Repair Services", "Legal Services",
+                    "Financial Services", "Health Services", "Educational Services", "Other Services"
+                ]
+            }
+        ];
+
+        // Helper Functions
+        function getCategoryEmoji(category) {
+            const categoryMap = {
+                "Electronics": "📱",
+                "Vehicles": "🚗",
+                "Real Estate": "🏠",
+                "Jobs": "💼",
+                "Fashion": "👕",
+                "Home & Garden": "🏡",
+                "Books & Education": "📚",
+                "Music & Instruments": "🎵",
+                "Sports & Fitness": "⚽",
+                "Pets & Animals": "🐕",
+                "Food & Restaurants": "🍽️",
+                "Services": "🔧"
+            };
+            return categoryMap[category] || "📦";
+        }
+
+        function saveAds() {
+            localStorage.setItem('nepalibazar_ads', JSON.stringify(ads));
+        }
+
+        function loadAds() {
+            const saved = localStorage.getItem('nepalibazar_ads');
+            if (saved) {
+                const savedAds = JSON.parse(saved);
+                // Merge saved ads with default ads, avoiding duplicates
+                const defaultIds = ads.map(ad => ad.id);
+                const newAds = savedAds.filter(ad => !defaultIds.includes(ad.id));
+                ads = [...newAds, ...ads];
+            }
+        }
+
+        // Initialize data
+        function initializeData() {
+            ads = [
+                {
+                    id: 1,
+                    title: "iPhone 15 Pro Max - Like New",
+                    category: "Electronics",
+                    price: 159000,
+                    location: "Kathmandu, Bagmati",
+                    description: "Brand new iPhone 15 Pro Max with all accessories. Perfect condition, barely used. Includes original box, charger, and warranty.",
+                    email: "seller@example.com",
+                    phone: "+977-9841234567",
+                    datePosted: new Date(Date.now() - 86400000).toISOString(),
+                    emoji: "📱",
+                    verified: true,
+                    views: 2500,
+                    likes: 189
+                },
+                {
+                    id: 2,
+                    title: "Tesla Model Y - Premium",
+                    category: "Vehicles",
+                    price: 8500000,
+                    location: "Pokhara, Gandaki",
+                    description: "Premium Tesla Model Y with autopilot system. Self-driving capabilities and advanced features. Perfect for eco-conscious drivers.",
+                    email: "tesla@example.com",
+                    phone: "+977-9856789012",
+                    datePosted: new Date(Date.now() - 172800000).toISOString(),
+                    emoji: "🚗",
+                    verified: true,
+                    views: 4200,
+                    likes: 356
+                },
+                {
+                    id: 3,
+                    title: "Smart Home - Modern Living",
+                    category: "Real Estate",
+                    price: 12500000,
+                    location: "Lalitpur, Bagmati",
+                    description: "Modern smart home with automation systems. Advanced security, climate control, and entertainment systems integrated throughout.",
+                    email: "realestate@example.com",
+                    phone: "+977-9812345678",
+                    datePosted: new Date(Date.now() - 259200000).toISOString(),
+                    emoji: "🏠",
+                    verified: true,
+                    views: 1890,
+                    likes: 267
+                },
+                {
+                    id: 4,
+                    title: "MacBook Pro M3 - Professional",
+                    category: "Electronics",
+                    price: 385000,
+                    location: "Bhaktapur, Bagmati",
+                    description: "Latest MacBook Pro with M3 chip. Perfect for developers, designers, and professionals. Includes all accessories and warranty.",
+                    email: "tech@example.com",
+                    phone: "+977-9823456789",
+                    datePosted: new Date(Date.now() - 345600000).toISOString(),
+                    emoji: "💻",
+                    verified: true,
+                    views: 1756,
+                    likes: 143
+                },
+                {
+                    id: 5,
+                    title: "Designer Fashion Collection",
+                    category: "Fashion",
+                    price: 15000,
+                    location: "Butwal, Lumbini",
+                    description: "Premium fashion collection with modern designs. High-quality materials and sustainable production. Perfect for fashion enthusiasts.",
+                    email: "fashion@example.com",
+                    phone: "+977-9834567890",
+                    datePosted: new Date(Date.now() - 432000000).toISOString(),
+                    emoji: "👕",
+                    verified: true,
+                    views: 832,
+                    likes: 128
+                },
+                {
+                    id: 6,
+                    title: "Professional Photography Services",
+                    category: "Services",
+                    price: 25000,
+                    location: "Chitwan, Bagmati",
+                    description: "Professional photography services for events, portraits, and commercial shoots. High-quality equipment and experienced photographers.",
+                    email: "photo@example.com",
+                    phone: "+977-9845678901",
+                    datePosted: new Date(Date.now() - 518400000).toISOString(),
+                    emoji: "📸",
+                    verified: true,
+                    views: 1324,
+                    likes: 219
+                }
+            ];
+            
+            loadAds(); // Load saved ads from localStorage
+            filteredAds = [...ads];
+            loadWishlist();
+            renderRecentListings();
+            renderCategoriesPreview();
+            updateWishlistCount();
+        }
+
+        // Page Navigation
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page-container').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            const targetPage = document.getElementById(pageName + 'Page');
+            if (targetPage) {
+                targetPage.classList.add('active');
+                currentPageView = pageName;
+                
+                // Load page-specific content
+                switch(pageName) {
+                    case 'search':
+                        renderSearchResults();
+                        break;
+                    case 'categories':
+                        renderAllCategories();
+                        break;
+                    case 'wishlist':
+                        renderWishlistItems();
+                        break;
+                }
+            }
+        }
+
+        // Mobile Menu
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('open');
+        }
+
+        // Search Functions
+        function performSearch() {
+            const searchTerm = document.getElementById('mainSearchInput').value.toLowerCase().trim();
+            const category = document.getElementById('mainCategorySelect').value;
+            
+            filteredAds = ads.filter(ad => {
+                const matchesSearch = !searchTerm || 
+                    ad.title.toLowerCase().includes(searchTerm) ||
+                    ad.description.toLowerCase().includes(searchTerm) ||
+                    ad.location.toLowerCase().includes(searchTerm);
+                
+                const matchesCategory = !category || ad.category === category;
+                
+                return matchesSearch && matchesCategory;
+            });
+            
+            showPage('search');
+            renderSearchResults();
+            
+            if (searchTerm || category) {
+                showMessage(`Found ${filteredAds.length} results!`, 'success');
+            }
+        }
+
+        function performAdvancedSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const category = document.getElementById('categoryFilter').value;
+            const priceRange = document.getElementById('priceFilter').value;
+            const sortBy = document.getElementById('sortBy').value;
+            
+            filteredAds = ads.filter(ad => {
+                const matchesSearch = !searchTerm || 
+                    ad.title.toLowerCase().includes(searchTerm) ||
+                    ad.description.toLowerCase().includes(searchTerm) ||
+                    ad.location.toLowerCase().includes(searchTerm);
+                
+                const matchesCategory = !category || ad.category === category;
+                
+                let matchesPrice = true;
+                if (priceRange) {
+                    if (priceRange === '500000+') {
+                        matchesPrice = ad.price >= 500000;
+                    } else {
+                        const [min, max] = priceRange.split('-').map(Number);
+                        matchesPrice = ad.price >= min && ad.price <= max;
+                    }
+                }
+                
+                return matchesSearch && matchesCategory && matchesPrice;
+            });
+            
+            // Apply sorting
+            applySorting(sortBy);
+            
+            currentPage = 1;
+            renderSearchResults();
+        }
+
+        function applySorting(sortBy) {
+            switch(sortBy) {
+                case 'newest':
+                    filteredAds.sort((a, b) => new Date(b.datePosted) - new Date(a.datePosted));
+                    break;
+                case 'price-low':
+                    filteredAds.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filteredAds.sort((a, b) => b.price - a.price);
+                    break;
+                case 'popular':
+                    filteredAds.sort((a, b) => (b.views || 0) - (a.views || 0));
+                    break;
+                case 'verified':
+                    filteredAds.sort((a, b) => {
+                        if (a.verified && !b.verified) return -1;
+                        if (!a.verified && b.verified) return 1;
+                        return new Date(b.datePosted) - new Date(a.datePosted);
+                    });
+                    break;
+            }
+        }
+
+        // Render Functions
+        function renderRecentListings() {
+            const container = document.getElementById('recentListings');
+            const recentAds = ads.slice(0, 8);
+            
+            container.innerHTML = recentAds.map(ad => createAdCard(ad)).join('');
+        }
+
+        function renderCategoriesPreview() {
+            const container = document.getElementById('categoriesPreview');
+            
+            container.innerHTML = categories.slice(0, 12).map(category => `
+                <div class="glass-card rounded-xl p-6 text-center cursor-pointer hover-lift" onclick="filterByCategory('${category.name}')">
+                    <div class="text-4xl mb-4">${category.emoji}</div>
+                    <div class="text-white font-bold mb-2">${category.name}</div>
+                    <div class="text-blue-400 text-sm">${category.count} items</div>
+                </div>
+            `).join('');
+        }
+
+        function renderAllCategories() {
+            const container = document.getElementById('allCategories');
+            
+            container.innerHTML = categories.map(category => `
+                <div class="glass-card rounded-xl p-6 text-center cursor-pointer hover-lift" onclick="filterByCategory('${category.name}')">
+                    <div class="text-4xl mb-4">${category.emoji}</div>
+                    <div class="text-white font-bold mb-2">${category.name}</div>
+                    <div class="text-blue-400 text-sm">${category.count} items</div>
+                </div>
+            `).join('');
+        }
+
+        function renderSearchResults() {
+            const container = document.getElementById('searchResults');
+            const resultsCount = document.getElementById('searchResultsCount');
+            
+            if (filteredAds.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-20">
+                        <div class="text-6xl mb-6">🔍</div>
+                        <div class="text-2xl font-bold text-white mb-4">No results found</div>
+                        <div class="text-gray-400">Try adjusting your search criteria</div>
+                    </div>
+                `;
+                resultsCount.textContent = '0';
+                return;
+            }
+            
+            const startIndex = (currentPage - 1) * adsPerPage;
+            const endIndex = startIndex + adsPerPage;
+            const adsToShow = filteredAds.slice(0, endIndex);
+            
+            resultsCount.textContent = filteredAds.length.toLocaleString();
+            container.innerHTML = adsToShow.map(ad => createAdCard(ad)).join('');
+            
+            // Show/hide load more button
+            const loadMoreBtn = document.getElementById('loadMoreSearch');
+            if (endIndex >= filteredAds.length) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'block';
+            }
+        }
+
+        function renderWishlistItems() {
+            const container = document.getElementById('wishlistItems');
+            const emptyWishlist = document.getElementById('emptyWishlist');
+            
+            if (wishlist.length === 0) {
+                container.style.display = 'none';
+                emptyWishlist.style.display = 'block';
+                return;
+            }
+            
+            container.style.display = 'grid';
+            emptyWishlist.style.display = 'none';
+            
+            const wishlistAds = ads.filter(ad => wishlist.includes(ad.id));
+            container.innerHTML = wishlistAds.map(ad => createAdCard(ad)).join('');
+        }
+
+        function createAdCard(ad) {
+            return `
+                <div class="glass-card rounded-xl overflow-hidden hover-lift cursor-pointer" onclick="viewAd(${ad.id})">
+                    <div class="h-48 bg-gradient-to-br from-blue-500 via-purple-600 to-blue-500 flex items-center justify-center relative">
+                        <span class="text-6xl">${ad.emoji}</span>
+                        <div class="absolute top-4 right-4 flex flex-col gap-2">
+                            ${ad.verified ? '<div class="bg-green-500 text-white text-xs px-2 py-1 rounded-full">✓ Verified</div>' : ''}
+                        </div>
+                        <button class="absolute top-4 left-4 text-2xl transition-all duration-300 hover:scale-125" onclick="event.stopPropagation(); toggleWishlist(${ad.id})" ${wishlist.includes(ad.id) ? 'style="color: #ef4444;"' : 'style="color: white;"'}>
+                            ${wishlist.includes(ad.id) ? '❤️' : '🤍'}
+                        </button>
+                        <div class="absolute bottom-4 left-4 glass-card text-white px-3 py-1 rounded-lg text-sm">
+                            👁️ ${ad.views} • ❤️ ${ad.likes}
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h4 class="font-bold text-lg mb-3 text-white line-clamp-2">${ad.title}</h4>
+                        <p class="text-gray-300 text-sm mb-4 line-clamp-3">${ad.description.substring(0, 100)}${ad.description.length > 100 ? '...' : ''}</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-2xl font-bold gradient-text">Rs. ${ad.price.toLocaleString()}</span>
+                            <span class="text-sm text-gray-400">📍 ${ad.location}</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-gray-400 border-t border-white/10 pt-4">
+                            <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full">${ad.category}</span>
+                            <span>${new Date(ad.datePosted).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Wishlist Functions
+        function toggleWishlist(adId) {
+            if (wishlist.includes(adId)) {
+                wishlist = wishlist.filter(id => id !== adId);
+                showMessage('Removed from wishlist', 'info');
+            } else {
+                wishlist.push(adId);
+                showMessage('Added to wishlist!', 'success');
+            }
+            
+            saveWishlist();
+            updateWishlistCount();
+            
+            if (currentPageView === 'wishlist') {
+                renderWishlistItems();
+            }
+        }
+
+        function saveWishlist() {
+            localStorage.setItem('nepalibazar_wishlist', JSON.stringify(wishlist));
+        }
+
+        function loadWishlist() {
+            const saved = localStorage.getItem('nepalibazar_wishlist');
+            if (saved) {
+                wishlist = JSON.parse(saved);
+            }
+        }
+
+        function updateWishlistCount() {
+            document.getElementById('wishlistCount').textContent = wishlist.length;
+        }
+
+        // Filter Functions
+        function filterByCategory(categoryName) {
+            document.getElementById('mainCategorySelect').value = categoryName;
+            document.getElementById('categoryFilter').value = categoryName;
+            performSearch();
+        }
+
+        function loadMoreResults() {
+            currentPage++;
+            renderSearchResults();
+        }
+
+        // District data for Nepal
+        const districtData = {
+            "Koshi": ["Bhojpur", "Dhankuta", "Ilam", "Jhapa", "Khotang", "Morang", "Okhaldhunga", "Panchthar", "Sankhuwasabha", "Solukhumbu", "Sunsari", "Taplejung", "Terhathum", "Udayapur"],
+            "Madhesh": ["Bara", "Dhanusha", "Mahottari", "Parsa", "Rautahat", "Saptari", "Sarlahi", "Siraha"],
+            "Bagmati": ["Bhaktapur", "Chitwan", "Dhading", "Dolakha", "Kathmandu", "Kavrepalanchok", "Lalitpur", "Makwanpur", "Nuwakot", "Ramechhap", "Rasuwa", "Sindhuli", "Sindhupalchok"],
+            "Gandaki": ["Baglung", "Gorkha", "Kaski", "Lamjung", "Manang", "Mustang", "Myagdi", "Nawalpur", "Parbat", "Syangja", "Tanahun"],
+            "Lumbini": ["Arghakhanchi", "Banke", "Bardiya", "Dang", "Gulmi", "Kapilvastu", "Palpa", "Parasi", "Pyuthan", "Rolpa", "Rukum East", "Rupandehi"],
+            "Karnali": ["Dailekh", "Dolpa", "Humla", "Jajarkot", "Jumla", "Kalikot", "Mugu", "Rukum West", "Salyan", "Surkhet"],
+            "Sudurpashchim": ["Achham", "Baitadi", "Bajhang", "Bajura", "Dadeldhura", "Darchula", "Doti", "Kailali", "Kanchanpur"]
+        };
+
+        // Step navigation functions
+        function nextStep(step) {
+            // Validate current step before proceeding
+            if (step === 2) {
+                if (!validateStep1()) return;
+            } else if (step === 3) {
+                if (!validateStep2()) return;
+            }
+            
+            // Hide all steps
+            document.getElementById('formStep1').classList.add('hidden');
+            document.getElementById('formStep2').classList.add('hidden');
+            document.getElementById('formStep3').classList.add('hidden');
+            
+            // Show target step
+            document.getElementById('formStep' + step).classList.remove('hidden');
+            
+            // Update step indicators
+            updateStepIndicators(step);
+        }
+
+        function prevStep(step) {
+            // Hide all steps
+            document.getElementById('formStep1').classList.add('hidden');
+            document.getElementById('formStep2').classList.add('hidden');
+            document.getElementById('formStep3').classList.add('hidden');
+            
+            // Show target step
+            document.getElementById('formStep' + step).classList.remove('hidden');
+            
+            // Update step indicators
+            updateStepIndicators(step);
+        }
+
+        function updateStepIndicators(currentStep) {
+            // Reset all steps
+            for (let i = 1; i <= 3; i++) {
+                const stepEl = document.getElementById('step' + i);
+                const stepText = stepEl.nextElementSibling;
+                
+                if (i < currentStep) {
+                    // Completed step
+                    stepEl.className = 'w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold';
+                    stepEl.innerHTML = '✓';
+                    stepText.className = 'ml-2 text-green-400 font-medium';
+                } else if (i === currentStep) {
+                    // Current step
+                    stepEl.className = 'w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold';
+                    stepEl.innerHTML = i;
+                    stepText.className = 'ml-2 text-white font-medium';
+                } else {
+                    // Future step
+                    stepEl.className = 'w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold';
+                    stepEl.innerHTML = i;
+                    stepText.className = 'ml-2 text-gray-400 font-medium';
+                }
+            }
+        }
+
+        function validateStep1() {
+            const title = document.getElementById('adTitle').value.trim();
+            const category = document.getElementById('adCategory').value;
+            const subcategory = document.getElementById('adSubcategory').value;
+            const price = document.getElementById('adPrice').value;
+            
+            if (!title) {
+                showMessage('Please enter an ad title', 'error');
+                return false;
+            }
+            if (!category) {
+                showMessage('Please select a category', 'error');
+                return false;
+            }
+            if (!subcategory) {
+                showMessage('Please select a subcategory', 'error');
+                return false;
+            }
+            if (!price || price <= 0) {
+                showMessage('Please enter a valid price', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        function validateStep2() {
+            const description = document.getElementById('adDescription').value.trim();
+            
+            if (!description) {
+                showMessage('Please provide a description', 'error');
+                return false;
+            }
+            if (description.length < 20) {
+                showMessage('Description should be at least 20 characters long', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        // Update subcategories based on selected category
+        function updateSubcategories() {
+            const categorySelect = document.getElementById('adCategory');
+            const subcategorySelect = document.getElementById('adSubcategory');
+            const selectedCategory = categorySelect.value;
+            
+            // Clear existing options
+            subcategorySelect.innerHTML = '<option value="">Select Subcategory</option>';
+            
+            if (selectedCategory) {
+                const category = categories.find(cat => cat.name === selectedCategory);
+                if (category && category.subcategories) {
+                    category.subcategories.forEach(subcategory => {
+                        const option = document.createElement('option');
+                        option.value = subcategory;
+                        option.textContent = subcategory;
+                        subcategorySelect.appendChild(option);
+                    });
+                }
+            }
+        }
+
+        // Update districts based on selected province
+        function updateDistricts() {
+            const provinceSelect = document.getElementById('adProvince');
+            const districtSelect = document.getElementById('adDistrict');
+            const selectedProvince = provinceSelect.value;
+            
+            // Clear existing options
+            districtSelect.innerHTML = '<option value="">Select District</option>';
+            
+            if (selectedProvince && districtData[selectedProvince]) {
+                districtData[selectedProvince].forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district;
+                    option.textContent = district;
+                    districtSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Form Handlers
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (email && password) {
+                showMessage('Login successful! (Demo)', 'success');
+                showPage('home');
+            }
+        }
+
+        function handlePostAd(event) {
+            event.preventDefault();
+            
+            // Validate final step
+            const sellerName = document.getElementById('adSellerName').value.trim();
+            const email = document.getElementById('adEmail').value.trim();
+            const phone = document.getElementById('adPhone').value.trim();
+            const province = document.getElementById('adProvince').value;
+            const district = document.getElementById('adDistrict').value;
+            const location = document.getElementById('adLocation').value.trim();
+            
+            if (!sellerName || !email || !phone || !province || !district || !location) {
+                showMessage('Please fill in all required contact fields', 'error');
+                return;
+            }
+            
+            // Collect all form data
+            const formData = {
+                title: document.getElementById('adTitle').value.trim(),
+                category: document.getElementById('adCategory').value,
+                subcategory: document.getElementById('adSubcategory').value,
+                condition: document.getElementById('adCondition').value,
+                price: parseInt(document.getElementById('adPrice').value),
+                negotiable: document.getElementById('negotiable').checked,
+                description: document.getElementById('adDescription').value.trim(),
+                brand: document.getElementById('adBrand').value.trim(),
+                model: document.getElementById('adModel').value.trim(),
+                year: document.getElementById('adYear').value,
+                color: document.getElementById('adColor').value.trim(),
+                tags: document.getElementById('adTags').value.trim(),
+                sellerName: sellerName,
+                email: email,
+                phone: phone,
+                whatsapp: document.getElementById('adWhatsapp').value.trim(),
+                province: province,
+                district: district,
+                location: location,
+                allowCalls: document.getElementById('allowCalls').checked,
+                allowSMS: document.getElementById('allowSMS').checked,
+                allowEmail: document.getElementById('allowEmail').checked
+            };
+            
+            // Create new ad object with enhanced data
+            const newAd = {
+                id: Date.now(), // Use timestamp for unique ID
+                title: formData.title,
+                category: formData.category,
+                subcategory: formData.subcategory,
+                condition: formData.condition,
+                price: formData.price,
+                negotiable: formData.negotiable,
+                location: `${formData.location}, ${formData.district}, ${formData.province}`,
+                description: formData.description,
+                brand: formData.brand,
+                model: formData.model,
+                year: formData.year,
+                color: formData.color,
+                tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : [],
+                sellerName: formData.sellerName,
+                email: formData.email,
+                phone: formData.phone,
+                whatsapp: formData.whatsapp,
+                province: formData.province,
+                district: formData.district,
+                contactPreferences: {
+                    calls: formData.allowCalls,
+                    sms: formData.allowSMS,
+                    email: formData.allowEmail
+                },
+                datePosted: new Date().toISOString(),
+                emoji: getCategoryEmoji(formData.category),
+                verified: false,
+                views: 0,
+                likes: 0,
+                featured: false
+            };
+            
+            // Add to ads array
+            ads.unshift(newAd); // Add to beginning for newest first
+            filteredAds = [...ads]; // Update filtered ads
+            
+            // Clear form and reset to step 1
+            clearPostAdForm();
+            
+            // Save to localStorage
+            saveAds();
+            
+            showMessage('🎉 Ad posted successfully! Your listing is now live and visible to buyers.', 'success');
+            
+            // Refresh home page listings
+            renderRecentListings();
+            
+            // Go to home page after a short delay
+            setTimeout(() => {
+                showPage('home');
+            }, 2000);
+        }
+
+        function clearPostAdForm() {
+            // Clear all form fields
+            document.getElementById('adTitle').value = '';
+            document.getElementById('adCategory').value = '';
+            document.getElementById('adSubcategory').innerHTML = '<option value="">Select Category First</option>';
+            document.getElementById('adCondition').value = '';
+            document.getElementById('adPrice').value = '';
+            document.getElementById('negotiable').checked = false;
+            document.getElementById('adDescription').value = '';
+            document.getElementById('adBrand').value = '';
+            document.getElementById('adModel').value = '';
+            document.getElementById('adYear').value = '';
+            document.getElementById('adColor').value = '';
+            document.getElementById('adTags').value = '';
+            document.getElementById('adSellerName').value = '';
+            document.getElementById('adEmail').value = '';
+            document.getElementById('adPhone').value = '';
+            document.getElementById('adWhatsapp').value = '';
+            document.getElementById('adProvince').value = '';
+            document.getElementById('adDistrict').innerHTML = '<option value="">Select Province First</option>';
+            document.getElementById('adLocation').value = '';
+            document.getElementById('allowCalls').checked = true;
+            document.getElementById('allowSMS').checked = true;
+            document.getElementById('allowEmail').checked = true;
+            
+            // Reset to step 1
+            document.getElementById('formStep1').classList.remove('hidden');
+            document.getElementById('formStep2').classList.add('hidden');
+            document.getElementById('formStep3').classList.add('hidden');
+            updateStepIndicators(1);
+        }
+
+        function showSignupForm() {
+            const loginForm = document.querySelector('#loginPage form');
+            const signupForm = document.getElementById('signupForm');
+            const loginLink = document.querySelector('#loginPage .mt-8');
+            
+            loginForm.style.display = 'none';
+            loginLink.style.display = 'none';
+            signupForm.classList.remove('hidden');
+        }
+
+        function showLoginForm() {
+            const loginForm = document.querySelector('#loginPage form');
+            const signupForm = document.getElementById('signupForm');
+            const loginLink = document.querySelector('#loginPage .mt-8');
+            
+            signupForm.classList.add('hidden');
+            loginForm.style.display = 'block';
+            loginLink.style.display = 'block';
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            
+            const firstName = document.getElementById('signupFirstName').value;
+            const lastName = document.getElementById('signupLastName').value;
+            const email = document.getElementById('signupEmail').value;
+            const phone = document.getElementById('signupPhone').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            
+            if (!firstName || !lastName || !email || !phone || !password || !confirmPassword) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showMessage('Passwords do not match', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('Password must be at least 6 characters', 'error');
+                return;
+            }
+            
+            if (!agreeTerms) {
+                showMessage('Please agree to the terms and conditions', 'error');
+                return;
+            }
+            
+            showMessage('Account created successfully! Welcome to NepaliBazar!', 'success');
+            showPage('home');
+        }
+
+        // Chat Functions
+        function toggleChat() {
+            const chatWidget = document.getElementById('chatWidget');
+            chatWidget.classList.toggle('hidden');
+            
+            if (!chatWidget.classList.contains('hidden')) {
+                document.getElementById('chatInput').focus();
+            }
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addChatMessage(message, true);
+            input.value = '';
+            
+            // Simulate AI response
+            setTimeout(() => {
+                const response = generateResponse(message);
+                addChatMessage(response, false);
+            }, 1000);
+        }
+
+        function addChatMessage(message, isUser) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex items-start space-x-2 ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
+            
+            const avatar = isUser ? 
+                `<div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span class="text-white text-xs">👤</span>
+                </div>` :
+                `<div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span class="text-white text-xs">🤖</span>
+                </div>`;
+            
+            const messageClass = isUser ? 'bg-green-500/20 text-green-100' : 'bg-white/10 text-white';
+            
+            messageDiv.innerHTML = `
+                ${avatar}
+                <div class="${messageClass} rounded-lg p-3 text-sm max-w-xs">
+                    ${message}
+                </div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function generateResponse(message) {
+            const responses = {
+                'hello': 'Hello! How can I help you today?',
+                'help': 'I can help you with searching items, posting ads, or navigating the platform. What do you need assistance with?',
+                'search': 'You can search for items using the search bar at the top of the page. Try using specific keywords or browse by category.',
+                'price': 'Our smart price analysis helps you find the best deals. Look for verified listings for the most accurate pricing.',
+                'contact': 'You can contact sellers directly through the contact information provided in each listing.',
+                'default': 'Thanks for your message! I\'m here to help with any questions about our marketplace. You can ask me about searching, posting ads, or general platform features.'
+            };
+            
+            const lowerMessage = message.toLowerCase();
+            
+            for (const [key, response] of Object.entries(responses)) {
+                if (lowerMessage.includes(key)) {
+                    return response;
+                }
+            }
+            
+            return responses.default;
+        }
+
+        // Utility Functions
+        function viewAd(adId) {
+            const ad = ads.find(a => a.id === adId);
+            if (ad) {
+                // Increment view count
+                ad.views = (ad.views || 0) + 1;
+                saveAds();
+                
+                // Show ad details in a modal-like format
+                showAdDetails(ad);
+            }
+        }
+
+        function showAdDetails(ad) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50';
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            };
+            
+            // Build additional details HTML
+            let additionalDetails = '';
+            if (ad.subcategory) {
+                additionalDetails += `
+                    <div class="text-gray-300">
+                        <span class="text-white font-semibold">🏷️ Subcategory:</span> ${ad.subcategory}
+                    </div>
+                `;
+            }
+            if (ad.condition) {
+                additionalDetails += `
+                    <div class="text-gray-300">
+                        <span class="text-white font-semibold">⭐ Condition:</span> ${ad.condition}
+                    </div>
+                `;
+            }
+            if (ad.brand) {
+                additionalDetails += `
+                    <div class="text-gray-300">
+                        <span class="text-white font-semibold">🏢 Brand:</span> ${ad.brand}
+                    </div>
+                `;
+            }
+            if (ad.model) {
+                additionalDetails += `
+                    <div class="text-gray-300">
+                        <span class="text-white font-semibold">📱 Model:</span> ${ad.model}
+                    </div>
+                `;
+            }
+            if (ad.year) {
+                additionalDetails += `
+                    <div class="text-gray-300">
+                        <span class="text-white font-semibold">📅 Year:</span> ${ad.year}
+                    </div>
+                `;
+            }
+            if (ad.color) {
+                additionalDetails += `
+                    <div class="text-gray-300">
+                        <span class="text-white font-semibold">🎨 Color:</span> ${ad.color}
+                    </div>
+                `;
+            }
+
+            // Build tags HTML
+            let tagsHTML = '';
+            if (ad.tags && ad.tags.length > 0) {
+                tagsHTML = `
+                    <div class="border-t border-white/10 pt-4">
+                        <h3 class="text-white font-semibold mb-2">Tags</h3>
+                        <div class="flex flex-wrap gap-2">
+                            ${ad.tags.map(tag => `<span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm">#${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Build contact options HTML
+            let contactOptions = '';
+            if (ad.sellerName) {
+                contactOptions += `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-yellow-400">👤</span>
+                        <span class="text-gray-300">${ad.sellerName}</span>
+                    </div>
+                `;
+            }
+            contactOptions += `
+                <div class="flex items-center space-x-3">
+                    <span class="text-blue-400">📧</span>
+                    <a href="mailto:${ad.email}" class="text-blue-400 hover:text-blue-300">${ad.email}</a>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span class="text-green-400">📞</span>
+                    <a href="tel:${ad.phone}" class="text-green-400 hover:text-green-300">${ad.phone}</a>
+                </div>
+            `;
+            if (ad.whatsapp) {
+                contactOptions += `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-green-400">💬</span>
+                        <a href="https://wa.me/${ad.whatsapp.replace(/[^0-9]/g, '')}" target="_blank" class="text-green-400 hover:text-green-300">WhatsApp: ${ad.whatsapp}</a>
+                    </div>
+                `;
+            }
+
+            modal.innerHTML = `
+                <div class="glass-card rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-6">
+                            <div>
+                                <h2 class="text-2xl font-bold text-white mb-2">${ad.title}</h2>
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm">${ad.category}</span>
+                                    ${ad.subcategory ? `<span class="bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-sm">${ad.subcategory}</span>` : ''}
+                                    ${ad.featured ? '<span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm">⭐ Featured</span>' : ''}
+                                </div>
+                            </div>
+                            <button onclick="document.body.removeChild(this.closest('.fixed'))" class="text-white/60 hover:text-white text-2xl">×</button>
+                        </div>
+                        
+                        <div class="h-64 bg-gradient-to-br from-blue-500 via-purple-600 to-blue-500 rounded-xl flex items-center justify-center mb-6 relative">
+                            <span class="text-8xl">${ad.emoji}</span>
+                            <div class="absolute top-4 right-4 flex flex-col gap-2">
+                                ${ad.verified ? '<div class="bg-green-500 text-white text-xs px-2 py-1 rounded-full">✓ Verified</div>' : '<div class="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">⏳ Pending</div>'}
+                                ${ad.condition ? `<div class="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">${ad.condition}</div>` : ''}
+                            </div>
+                            <div class="absolute bottom-4 left-4 glass-card text-white px-3 py-1 rounded-lg text-sm">
+                                👁️ ${ad.views} • ❤️ ${ad.likes}
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-3xl font-bold gradient-text">Rs. ${ad.price.toLocaleString()}</span>
+                                    ${ad.negotiable ? '<span class="text-green-400 text-sm ml-2">💬 Negotiable</span>' : ''}
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="text-gray-300">
+                                    <span class="text-white font-semibold">📍 Location:</span> ${ad.location}
+                                </div>
+                                <div class="text-gray-300">
+                                    <span class="text-white font-semibold">📅 Posted:</span> ${new Date(ad.datePosted).toLocaleDateString()}
+                                </div>
+                                ${additionalDetails}
+                            </div>
+                            
+                            <div class="border-t border-white/10 pt-4">
+                                <h3 class="text-white font-semibold mb-2">Description</h3>
+                                <p class="text-gray-300 leading-relaxed">${ad.description}</p>
+                            </div>
+                            
+                            ${tagsHTML}
+                            
+                            <div class="border-t border-white/10 pt-4">
+                                <h3 class="text-white font-semibold mb-3">Contact Information</h3>
+                                <div class="space-y-2">
+                                    ${contactOptions}
+                                </div>
+                                ${ad.contactPreferences ? `
+                                    <div class="mt-4 p-3 bg-white/5 rounded-lg">
+                                        <p class="text-sm text-gray-400 mb-2">Preferred contact methods:</p>
+                                        <div class="flex gap-4 text-sm">
+                                            ${ad.contactPreferences.calls ? '<span class="text-green-400">📞 Calls</span>' : ''}
+                                            ${ad.contactPreferences.sms ? '<span class="text-blue-400">💬 SMS</span>' : ''}
+                                            ${ad.contactPreferences.email ? '<span class="text-purple-400">📧 Email</span>' : ''}
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            <div class="flex gap-4 pt-4">
+                                <button onclick="toggleWishlist(${ad.id}); document.body.removeChild(this.closest('.fixed'))" class="flex-1 ${wishlist.includes(ad.id) ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'} text-white py-3 rounded-xl font-medium transition-colors">
+                                    ${wishlist.includes(ad.id) ? '❤️ Remove from Wishlist' : '🤍 Add to Wishlist'}
+                                </button>
+                                <button onclick="window.open('mailto:${ad.email}?subject=Interested in ${encodeURIComponent(ad.title)}&body=Hi ${ad.sellerName || 'there'},%0A%0AI am interested in your listing: ${encodeURIComponent(ad.title)}%0APrice: Rs. ${ad.price.toLocaleString()}%0A%0APlease let me know if it is still available.%0A%0AThank you!')" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-medium transition-colors">
+                                    📧 Contact Seller
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function showMessage(message, type = 'info') {
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                info: 'bg-blue-500'
+            };
+            
+            const messageEl = document.createElement('div');
+            messageEl.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300`;
+            messageEl.textContent = message;
+            
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                messageEl.style.opacity = '0';
+                messageEl.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(messageEl);
+                }, 300);
+            }, 3000);
+        }
+
+        function showHelp() {
+            showMessage('Help center coming soon!', 'info');
+        }
+
+        function showContact() {
+            showMessage('Contact page coming soon!', 'info');
+        }
+
+        function showTerms() {
+            showMessage('Terms of service coming soon!', 'info');
+        }
+
+        function showPrivacy() {
+            showMessage('Privacy policy coming soon!', 'info');
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeData();
+            
+            // Add event listeners for filters
+            document.getElementById('sortBy').addEventListener('change', performAdvancedSearch);
+            document.getElementById('searchInput').addEventListener('input', performAdvancedSearch);
+            document.getElementById('categoryFilter').addEventListener('change', performAdvancedSearch);
+            document.getElementById('priceFilter').addEventListener('change', performAdvancedSearch);
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuButton = event.target.closest('button[onclick="toggleMobileMenu()"]');
+            
+            if (!mobileMenu.contains(event.target) && !menuButton && mobileMenu.classList.contains('open')) {
+                toggleMobileMenu();
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96c76f4bc156edfc',t:'MTc1NDc0NDQwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
